@@ -7,6 +7,7 @@ import time
 import autopy
 import mediapipe as mp
 import pyautogui
+import keyboard
 ##########################
 wCam, hCam = 1920, 1080
 
@@ -17,7 +18,6 @@ frameRyd = 200    #Lado inferior
 smoothening = 2
 #########################
 ############RELLENAR POR USUARIO VALOR EN CM#######
-Distancia_brazo = 30
 # Webcam
 cap = cv2.VideoCapture(2)
 cap.set(3, wCam)
@@ -52,7 +52,7 @@ xm,xh=0,0
 yh,ym=0,0
 angulos = [0, 0]
 #CSV
-Datos = [0, 0, 0]
+Datos = [0, 0, 0,0]
 ##################
 wScr, hScr = autopy.screen.size()
 
@@ -113,7 +113,6 @@ with mp_pose.Pose() as pose_mesh:
                     theta = math.asin((ym - yh) / (long_brazo * math.sin(phi)))
                 else:
                     theta = 0
-                print("angulo,",phi,theta)
             # 11. Frame Rate
             cTime = time.time()
             fps = 1 / (cTime - pTime)
@@ -169,7 +168,7 @@ with mp_pose.Pose() as pose_mesh:
                             puno_abierto = 0
                             count_puno = count_puno + 1
                             print("veces cerrado el puño", count_puno)
-                            Datos[0] = [count_puno,0,0]
+                            Datos[0] = [count_puno,0,0,0]
                         #modo click continuo si pones el indice y meñique arriba y el resto abajo y lo dejas presionado
                     if fingers[1] == 1 and fingers[2] == 0 and fingers[3] == 0 and fingers[4] == 1:
                         cv2.circle(img, (xm, ym),
@@ -187,5 +186,11 @@ with mp_pose.Pose() as pose_mesh:
 
             cv2.imshow("Image", img)
             cv2.waitKey(1)
+            Datos.append([distanceCM,theta,phi,time.time()])
             print("veces cerrado el puño", count_puno)
+            if keyboard.is_pressed("q"):
+                a = np.array(Datos)
+                print(a)
+                np.savetxt('data3D.csv', Datos, delimiter=",")
+                break  # si presionas q sales y se guarda los datos en el cvs
 #una vez que sales del programa
