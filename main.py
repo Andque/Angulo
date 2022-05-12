@@ -52,7 +52,7 @@ xm,xh=0,0
 yh,ym=0,0
 angulos = [0, 0]
 #CSV
-Datos = [0, 0, 0,0]
+Datos = [[0, 0, 0,0]]
 ##################
 wScr, hScr = autopy.screen.size()
 
